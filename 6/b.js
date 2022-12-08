@@ -14,14 +14,13 @@ function valueMarker() {
   for (i = 0; i <= arr.length; i++) {
     newArr.push(arr[i])
 
-    if (newArr.length > 4) {
+    if (newArr.length > 14) {
       newArr.shift()
     }
-    if (newArr.length === 4 && isUnique(newArr)) {
+    if (newArr.length === 14 && isUnique(newArr)) {
       console.log(i + 1)
       break
     }
   }
 }
-
 valueMarker()
