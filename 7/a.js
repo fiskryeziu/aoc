@@ -1,5 +1,4 @@
 const fs = require('fs')
-const { Z_DEFAULT_STRATEGY } = require('zlib')
 
 const lines = fs
   .readFileSync('input.txt', { encoding: 'utf-8' })
