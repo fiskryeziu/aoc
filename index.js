@@ -6,7 +6,7 @@ var data = fs_1.default.readFileSync('./input.txt', 'utf-8').trim().split('\n');
 // diagonal, written backwards, or even overlapping other words.
 function a() {
     // console.log(data);
-    var matrix = data.map(function (x) { return x.split(''); });
+    var matrix = data.map(function(x) { return x.split(''); });
     console.log(matrix);
 }
 console.log(a());

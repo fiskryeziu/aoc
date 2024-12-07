@@ -2,69 +2,117 @@ import fs from 'fs'
 
 let data = fs.readFileSync('./input.txt', 'utf-8').split('\n').map(x => x.split(''))
 
-type CurrentKey = "^" | "v" | "<" | ">";
 
-type Direction = {
-    direction: [number, number];
-    next: "^" | "v" | "<" | ">";
-};
-
-type DirectionMap = Record<CurrentKey, Direction>;
-
-const directions: DirectionMap = {
-    "^": { direction: [-1, 0], next: ">" },
-    "v": { direction: [1, 0], next: "<" },
-    "<": { direction: [0, -1], next: "^" },
-    ">": { direction: [0, 1], next: "v" },
-};
-
-let rows = data.length
-let cols = data[0].length
-
-function moveGuard(
-    el: CurrentKey,
-    row: number,
-    col: number,
-) {
-    let r = row
-    let c = col
-
-    while (true) {
-        const dr = directions[el].direction[0];
-        const dc = directions[el].direction[1];
-
-        const inBound = r >= 0 && r < rows && c >= 0 && c < cols;
-
-        if (!inBound) break
-
-        if (r + dr < rows && c + dc < cols && data[r + dr][c + dc] === '#') {
-            el = directions[el].next
-
-        }
-        else {
-            data[r][c] = 'x'
-            r += dr
-            c += dc
-        }
-    }
-}
+const dirs = [
+  [-1, 0],
+  [0, 1],
+  [1, 0],
+  [0, -1]
+];
+let rows = data.length;
+let cols = data[0].length;
 
 function a() {
-    for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < cols; col++) {
-            let el = data[row][col];
-            if (el === "^") {
-                moveGuard(el, row, col);
-            }
-        }
+  let el = data[0][0];
+  let pos = [-1, -1]
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      if (data[row][col] === "^") {
+        el = data[row][col]
+        data[row][col] = '.'
+        pos = [row, col]
+        break;
+      }
     }
-    const count = data.flat().reduce((acc, item) => item === 'x' ? acc + 1 : acc, 0)
+  }
 
-    return count - 1
+  let dir = 0
+
+  let set = new Set()
+  let [row, col] = pos
+  while (true) {
+    set.add(`${row}-${col}`)
+    const [dr, dc] = dirs[dir]
+
+    const r2 = row + dr
+    const c2 = col + dc
+
+
+    const inBound = r2 >= 0 && r2 < rows && c2 >= 0 && c2 < cols
+
+    if (!inBound) break;
+
+    if (data[r2][c2] !== "#") {
+      row = r2
+      col = c2
+    } else {
+      dir = (dir + 1) % 4
+    }
+  }
+  console.log(set.size - 1)
 }
 
 
-// function b() { }
+function b() {
+  let startP = [-1, -1]
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      if (data[row][col] === "^") {
+        data[row][col] = '.'
+        startP = [row, col]
+        break
+      }
+    }
+  }
 
-console.log(a());
-// console.log(b());
+  function solveCycle() {
+    let pos = startP
+    let dir = 0
+    let set = new Set()
+    let [row, col] = pos
+    let turns = 0
+    while (true) {
+      turns++
+      set.add(`${row}-${col}`)
+      const [dr, dc] = dirs[dir]
+
+      if (turns === rows * rows * 4) {
+        return true
+      }
+      const r2 = row + dr
+      const c2 = col + dc
+
+
+      const inBound = r2 >= 0 && r2 < rows && c2 >= 0 && c2 < cols
+
+      if (!inBound) return false
+
+      if (data[r2][c2] !== "#") {
+        row = r2
+        col = c2
+      } else {
+        dir = (dir + 1) % 4
+      }
+    }
+
+  }
+
+  let answer = 0
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      if (data[row][col] === '.' && !(startP[0] === row && startP[1] === col)) {
+        data[row][col] = "#"
+        if (solveCycle()) {
+          answer++
+        }
+        data[row][col] = "."
+
+      }
+    }
+  }
+  console.log(answer)
+}
+
+
+// a()
+// b()

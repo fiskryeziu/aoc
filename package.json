@@ -2,7 +2,7 @@
   "name": "aoc",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "start": "nodemon --watch './**/*.ts' --exec tsx index.ts"
   },
