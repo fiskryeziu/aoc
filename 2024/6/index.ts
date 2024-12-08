@@ -2,7 +2,6 @@ import fs from 'fs'
 
 let data = fs.readFileSync('./input.txt', 'utf-8').split('\n').map(x => x.split(''))
 
-
 const dirs = [
     [-1, 0],
     [0, 1],
@@ -58,8 +57,8 @@ function b() {
     for (let row = 0; row < rows; row++) {
         for (let col = 0; col < cols; col++) {
             if (data[row][col] === "^") {
-                data[row][col] = '.'
                 startP = [row, col]
+                data[row][col] = '.'
                 break
             }
         }
@@ -68,17 +67,16 @@ function b() {
     function solveCycle() {
         let pos = startP
         let dir = 0
-        let set = new Set()
         let [row, col] = pos
-        let turns = 0
+        const vis = new Uint8Array(rows * cols * 4)
         while (true) {
-            turns++
-            set.add(`${row}-${col}`)
             const [dr, dc] = dirs[dir]
-
-            if (turns === rows * rows * 4) {
+            let hash = (pos[0] * rows + pos[1]) * 4 + dir
+            if (vis[hash] === 1) {
                 return true
             }
+
+            vis[hash] = 1
             const r2 = row + dr
             const c2 = col + dc
 
@@ -88,8 +86,9 @@ function b() {
             if (!inBound) return false
 
             if (data[r2][c2] !== "#") {
-                row = r2
-                col = c2
+                pos = [r2, c2]
+                row = r2;
+                col = c2;
             } else {
                 dir = (dir + 1) % 4
             }
@@ -114,5 +113,5 @@ function b() {
 }
 
 
-a()
+// a()
 b()
